@@ -58,7 +58,7 @@ router.delete('/delete', (req, res) => {
   const { person  } = req.body
 
   if (validData(person, true)) {
-    updatePerson(person)
+    deletePerson(person)
     res.send('recived')
   } else {
     res.send('la información suministrada no es correcta, verifique los datos y vuelva a intentar')
@@ -90,11 +90,21 @@ const insertPerson = (person, father = {}, mother = {}) => {
   })
 }
 
-const updatePerson = (person, id) => {
+const updatePerson = (person) => {
   pool.query(`UPDATE person set fullname = ?, birth = ?
   WHERE identification = ? AND type_identification = ?`, [person.fullname, person.birth, person.identification, person.type_identification], (err, rows, fields) => {
       if (!err) {
         console.log('Person update!')
+      } else {
+        console.error(err)
+      }
+  })
+}
+
+const deletePerson = (person, id) => {
+  pool.query(`DELETE person WHERE identification = ? AND type_identification = ?`, [person.identification, person.type_identification], (err, rows, fields) => {
+      if (!err) {
+        console.log('Person deleted!')
       } else {
         console.error(err)
       }
