@@ -1,0 +1,36 @@
+version: "3.1"
+services:
+  api:
+    container_name: "test-api"
+    restart: always
+    build: .
+    ports:
+      - "3000:3000"
+    links:
+      - mysql
+    volumes:
+      - .:/usr/src/app
+  mysql:
+    container_name: "mysql-database"
+    image: mysql:5.7
+    restart: always
+    environment:
+      # So you don't have to use root, but you can if you like
+      MYSQL_USER: root
+      MYSQL_DATABASE: testApi
+      # Password for root access
+      MYSQL_ROOT_PASSWORD: secret
+    ports:
+      # <Port exposed> : < MySQL Port running inside container>
+      - "3306:3306"
+    logging:
+      driver: none
+    expose:
+      # Opens port 3306 on the container
+      - "3306"
+      # Where our data will be persisted
+    volumes:
+      - mysql-db-data:/var/lib/mysql
+# Names our volume
+volumes:
+  mysql-db-data:
