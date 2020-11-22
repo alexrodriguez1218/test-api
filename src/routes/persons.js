@@ -7,7 +7,10 @@ const pool = require('../database')
 
 
 router.get('/', (req, res) => {
-  pool.query('SELECT * FROM person', (err, rows, fields) => {
+  pool.query(`SELECT p.*,
+      (SELECT sp.fullname FROM person sp WHERE sp.identification = p.father) AS fullnameFather,
+      (SELECT sm.fullname FROM person sm WHERE sm.identification = p.mother) AS fullnameMother
+    FROM person p`, (err, rows, fields) => {
     if (!err) {
       res.json(rows)
     } else {
@@ -18,9 +21,11 @@ router.get('/', (req, res) => {
 
 router.get('/:id', (req, res) => {
   const { id } = req.params
-  pool.query(`SELECT * 
-  FROM person
-  WHERE identification = ?`, [id], (err, rows, fields) => {
+  pool.query(`SELECT p.*,
+      (SELECT sp.fullname FROM person sp WHERE sp.identification = p.father) AS fullnameFather,
+      (SELECT sm.fullname FROM person sm WHERE sm.identification = p.mother) AS fullnameMother
+      FROM person p
+    WHERE identification = ?`, [id], (err, rows, fields) => {
     if (!err) {
       res.json(rows[0])
     } else {
@@ -55,7 +60,7 @@ router.put('/edit', (req, res) => {
 })
 
 router.delete('/delete', (req, res) => {
-  const { person  } = req.body
+  const { person } = req.body
 
   if (validData(person, true)) {
     deletePerson(person)
