@@ -1,7 +1,8 @@
 const { json } = require('express')
 const express = require('express')
 const router = express.Router()
-const app = express()
+const { validData } = require('../utils')
+
 
 const pool = require('../database')
 
@@ -123,18 +124,6 @@ const deletePerson = (person, id) => {
   })
 }
 
-const validData = (data, required = false) => {
-  let control = true
 
-  if (data) {
-
-    control = (control && data.identification < 9999999999 && data.identification > 0)
-    control = (control && data.fullname !== '' && data.fullname)
-  } else {
-    control = required ? false : true
-  }
-  
-  return control
-}
 
 module.exports = router

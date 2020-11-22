@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "dev": "nodemon src/",
-    "start": "node src/"
+    "start": "node src/",
+    "test": "jasmine"
   },
   "keywords": [],
   "author": "",
@@ -17,7 +18,16 @@
     "mysql": "^2.18.1"
   },
   "devDependencies": {
+    "browserify": "^17.0.0",
     "cors": "^2.8.5",
-    "nodemon": "^2.0.6"
+    "jasmine": "^3.6.3",
+    "jasmine-core": "^3.6.0",
+    "jasmine-node": "^3.0.0",
+    "karma": "^5.2.3",
+    "karma-browserify": "^7.0.0",
+    "karma-chrome-launcher": "^3.1.0",
+    "karma-jasmine": "^4.0.1",
+    "nodemon": "^2.0.6",
+    "watchify": "^3.11.1"
   }
 }
