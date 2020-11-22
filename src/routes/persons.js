@@ -9,7 +9,9 @@ const pool = require('../database')
 router.get('/', (req, res) => {
   pool.query(`SELECT p.*,
       (SELECT sp.fullname FROM person sp WHERE sp.identification = p.father) AS fullnameFather,
-      (SELECT sm.fullname FROM person sm WHERE sm.identification = p.mother) AS fullnameMother
+      (SELECT sp.type_identification FROM person sp WHERE sp.identification = p.father) AS typeIdentificationFather,
+      (SELECT sm.fullname FROM person sm WHERE sm.identification = p.mother) AS fullnameMother,
+      (SELECT sm.type_identification FROM person sm WHERE sm.identification = p.mother) AS typeIdentificationMother
     FROM person p`, (err, rows, fields) => {
     if (!err) {
       res.json(rows)
@@ -23,7 +25,9 @@ router.get('/:id', (req, res) => {
   const { id } = req.params
   pool.query(`SELECT p.*,
       (SELECT sp.fullname FROM person sp WHERE sp.identification = p.father) AS fullnameFather,
-      (SELECT sm.fullname FROM person sm WHERE sm.identification = p.mother) AS fullnameMother
+      (SELECT sp.type_identification FROM person sp WHERE sp.identification = p.father) AS typeIdentificationFather,
+      (SELECT sm.fullname FROM person sm WHERE sm.identification = p.mother) AS fullnameMother,
+      (SELECT sm.type_identification FROM person sm WHERE sm.identification = p.mother) AS typeIdentificationMother
       FROM person p
     WHERE identification = ?`, [id], (err, rows, fields) => {
     if (!err) {
@@ -36,13 +40,16 @@ router.get('/:id', (req, res) => {
 
 
 router.post('/add', (req, res) => {
+  console.log(req.body)
+  
   const { person, father, mother } = req.body
+console.log(validData(father))
 
   if (validData(person, true) && validData(father) && validData(mother)) {
     father && insertPerson(father)
     mother && insertPerson(mother)
     insertPerson(person, father, mother)
-    res.send('recived')
+    res.status(200).json({msj: 'La persona fue creada de forma correcta'})
   } else {
     res.send('la información suministrada no es correcta, verifique los datos y vuelva a intentar')
   }
@@ -66,7 +73,7 @@ router.delete('/delete', (req, res) => {
     deletePerson(person)
     res.send('recived')
   } else {
-    res.send('la información suministrada no es correcta, verifique los datos y vuelva a intentar')
+    res.status(500).json({msj: 'la información suministrada no es correcta, verifique los datos y vuelva a intentar'})
   }
 })
 
@@ -124,9 +131,9 @@ const validData = (data, required = false) => {
     control = (control && data.identification < 9999999999 && data.identification > 0)
     control = (control && data.fullname !== '' && data.fullname)
   } else {
-    control = required && false
+    control = required ? false : true
   }
-
+  
   return control
 }
 
