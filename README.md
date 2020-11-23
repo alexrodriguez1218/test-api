@@ -150,4 +150,10 @@ _La validacion principal del sistema se basa en la identification de 10 caracter
 
 ```
 
+#testing Jasmine - Karma
+
+```
+karma start
+```
+
 Gracias por la oportunidad
